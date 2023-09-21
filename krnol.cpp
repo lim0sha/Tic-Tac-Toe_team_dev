@@ -81,6 +81,46 @@ int CheckGameState(int (arr)[3][3]) {
     return 3;
 }
 
+int AITurn(int (&desk_t)[3][3]) {
+    int x_r = std::rand() % 3 + 1;
+    int y_r = std::rand() % 3 + 1;
+    while (is_not_occupied(x_r, y_r, desk_t) == 1) {
+        srand((unsigned) time(NULL));
+        x_r = std::rand() % 3 + 1;
+        y_r = std::rand() % 3 + 1;
+    }
+    cout << x_r << y_r << '\n';
+
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; i < 3; i++) {
+            if (desk_t[i][j] == 0) {
+                desk_t[i][j] = 2;
+                if (CheckGameState(desk_t) == 2) {
+                    return 0;
+                }
+                else {
+                    desk_t[i][j] = 0;
+                }
+            }
+        }
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; i < 3; i++) {
+            if (desk_t[i][j] == 0) {
+                desk_t[i][j] = 1;
+                if (CheckGameState(desk_t) == 1) {
+                    desk_t[i][j] = 2;
+                    return 0;
+                }
+                else {
+                    desk_t[i][j] = 0;
+                }
+            }
+        }
+    }
+    desk_t[x_r][y_r] = 2;
+}
 int main() {
     int player_place_x, player_place_y;
     int desk[3][3];
@@ -88,6 +128,10 @@ int main() {
     while (CheckGameState(desk) == 0){
         drawing_desk(desk);
         hod_igroka(&player_place_x, &player_place_y, desk);
+        if (CheckGameState(desk) != 0) {
+            break;
+        }
+        AITurn(desk);
     }
     drawing_desk(desk);
     if (CheckGameState(desk) == 1) {
